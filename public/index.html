@@ -7,18 +7,47 @@
 </head>
 <body>
   <h1>Login</h1>
-  <input id="usuario" placeholder="Usuario" />
-  <button onclick="login()">Entrar</button>
+   <form id="formulario">
+        <input type="text" name="nome" placeholder="Nome">
+        <input type="text" name="email" placeholder="Email">
+        <button id="botonEnviar">Enviar</button>
+    </form>
+    <div id="mensagem"></div>
+    <script type="module">
+        botonEnviar.addEventListener("click",async (e)=>{
+            e.preventDefault();
+            //const {nome, email} = formulario;// desesctructura o obxeto de entrada
+            //console.log(nome.value, email.value);// imprime os valores do formulario
 
-  <div id="app" style="display:none">
-    <h2>Usuarios</h2>
-    <input id="nombre" placeholder="Nombre" />
-    <input id="edad" placeholder="Edad" />
-    <button onclick="crearUsuario()">Crear</button>
-    <ul id="lista"></ul>
-  </div>
+            let datosFormulario = new FormData(formulario);
+            let entradas = Object.fromEntries(datosFormulario.entries());
+            
+            console.log(JSON.stringify(entradas))
+            
+            let obxetoEnvio = {
+                method: "POST",
+                headers:{
+                    "Content-type":"application/json"
+                },
+                body: JSON.stringify(entradas)
+            }
+            let respostaServer = await fetch("/acceso", obxetoEnvio) 
 
-  <script src="js/app.js"></script>
+            let resposta = await respostaServer.json();
+
+            console.log(resposta);
+
+            if(resposta.resposta === "acesso autorizado"){
+                console.log("iremos a dashboard")
+                console.log(resposta.tokenUsuario);
+                localStorage.setItem("token",resposta.tokenUsuario)
+                location.replace("/dashboard");//é un get -> app.get("/dashboard",(res,res)=> {})
+            }else{
+                console.log(resposta.resposta);
+                mensagem.innerHTML = resposta.resposta;
+            }
+        })
+    </script>
 </body>
 </html>
 

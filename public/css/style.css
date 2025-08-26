@@ -5,3 +5,20 @@ body {
 input {
   margin: 5px;
 }
+
+form{
+  display: flex;
+  flex-direction: column;
+}
+.info-datos {
+  display: flex;
+  margin: 20px auto;
+  max-width: 400px;
+  padding: 10px;
+}
+
+.info-datos span {
+  display: flex;
+  justify-content: space-between;
+
+}

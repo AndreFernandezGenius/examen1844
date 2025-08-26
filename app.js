@@ -5,6 +5,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 import userRoutes from './routes/userRoutes.js';
+import { paxinas } from './Datos/datos.paxinas.js';
+import { accesoUser } from './controllers/accesoUser.js';
+import { isUser } from './middlewares/isUser.js';
 // si luego tienes authRoutes, también lo importas:
 // import authRoutes from './routes/authRoutes.js';
 
@@ -15,7 +18,7 @@ const app = express();
 // Necesario en ESModules para obtener __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
+app.use(express.urlencoded({extended: true}));// é necesario para recibir formularios con `action`
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -32,12 +35,17 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+app.post("/acceso", accesoUser);
+/*
 app.get('/register', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'register.html'));
 });
-
-app.get('/dashboard', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+*/
+app.get('/dashboard',(req,res)=>{
+  res.sendFile(path.join(__dirname, 'public', '/views/dashboard.html'));
+})
+app.get('/paxina-dashboard', isUser,(req, res) => {
+   res.send(paxinas.dashboard)
 });
 
 // Server
